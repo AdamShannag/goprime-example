@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  mariadb:
+    image: 'mariadb:10'
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: prime
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: myverysecretpassword
+    volumes:
+      - ./db-data/mariadb:/var/lib/mysql
+      - ./sql/mysql.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
+  postgres:
+    image: 'postgres:16'
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: myverysecretpassword
+      POSTGRES_DB: prime
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./db-data/postgres:/var/lib/postgresql/data
+      - ./sql/postgres.sql:/docker-entrypoint-initdb.d/create_tables.sql
